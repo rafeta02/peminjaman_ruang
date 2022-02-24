@@ -24,6 +24,7 @@ class Ruang extends Model
         'lantai_id',
         'name',
         'kapasitas',
+        'slug',
         'created_at',
         'updated_at',
         'deleted_at',
