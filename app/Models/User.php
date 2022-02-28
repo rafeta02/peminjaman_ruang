@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use \DateTimeInterface;
+use App\Notifications\VerifyUserNotification;
 use Carbon\Carbon;
 use Hash;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -10,6 +11,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -40,6 +42,17 @@ class User extends Authenticatable
         'updated_at',
         'deleted_at',
     ];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        self::created(function (User $user) {
+            $registrationRole = config('panel.registration_default_role');
+            if (!$user->roles()->get()->contains($registrationRole)) {
+                $user->roles()->attach($registrationRole);
+            }
+        });
+    }
 
     public function getIsAdminAttribute()
     {
