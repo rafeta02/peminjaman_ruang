@@ -137,7 +137,7 @@
                 @can('pinjam_access')
                     <li class="nav-item">
                         <a href="{{ route("admin.pinjams.index") }}" class="nav-link {{ request()->is("admin/pinjams") || request()->is("admin/pinjams/*") ? "active" : "" }}">
-                            <i class="fa-fw nav-icon fas fa-cogs">
+                            <i class="fa-fw nav-icon fas fa-calendar">
 
                             </i>
                             <p>
