@@ -28,6 +28,7 @@ class Pinjam extends Model implements HasMedia
         'diajukan'  => 'Diajukan',
         'disetujui' => 'Disetujui',
         'ditolak'   => 'Ditolak',
+        'selesai'   => 'Selesai',
     ];
 
     public $table = 'pinjams';
@@ -75,32 +76,32 @@ class Pinjam extends Model implements HasMedia
 
     public function getTimeStartAttribute($value)
     {
-        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.time_format')) : null;
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.clock_format')) : null;
     }
 
     public function setTimeStartAttribute($value)
     {
-        $this->attributes['time_start'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
+        $this->attributes['time_start'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.clock_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
     public function getTimeEndAttribute($value)
     {
-        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.time_format')) : null;
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.clock_format')) : null;
     }
 
     public function setTimeEndAttribute($value)
     {
-        $this->attributes['time_end'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
+        $this->attributes['time_end'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.clock_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
     public function getTimeReturnAttribute($value)
     {
-        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.time_format')) : null;
+        return $value ? Carbon::createFromFormat('Y-m-d H:i:s', $value)->format(config('panel.date_format') . ' ' . config('panel.clock_format')) : null;
     }
 
     public function setTimeReturnAttribute($value)
     {
-        $this->attributes['time_return'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
+        $this->attributes['time_return'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.clock_format'), $value)->format('Y-m-d H:i:s') : null;
     }
 
     public function borrowed_by()
@@ -126,5 +127,26 @@ class Pinjam extends Model implements HasMedia
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
+    }
+
+    public function gettanggalPengajuanAttribute()
+    {
+        return Carbon::parse($this->attributes['created_at'])->format('d F Y');
+    }
+
+    public function getDateReturnFormattedAttribute()
+    {
+        if ($this->attributes['date_return'] == null) {
+            return null;
+        }
+
+        return Carbon::parse($this->attributes['date_return'])->format('d F Y');
+    }
+
+    public function getWaktuPeminjamanAttribute()
+    {
+        $time_start = Carbon::parse($this->attributes['time_start'])->format('d M Y H:i');
+        $time_end = Carbon::parse($this->attributes['time_end'])->format('d M Y H:i');
+        return $time_start. ' - '. $time_end;
     }
 }

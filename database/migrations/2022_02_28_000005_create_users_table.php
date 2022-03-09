@@ -15,6 +15,14 @@ class CreateUsersTable extends Migration
             $table->datetime('email_verified_at')->nullable();
             $table->string('password');
             $table->string('remember_token')->nullable();
+            $table->string('id_simpeg')->nullable();
+            $table->string('nip')->nullable();
+            $table->string('no_identitas')->nullable();
+            $table->string('nama')->nullable();
+            $table->string('username')->nullable();
+            $table->longText('alamat')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->string('jwt_token')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

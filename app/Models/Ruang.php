@@ -6,6 +6,7 @@ use \DateTimeInterface;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Ruang extends Model
 {
@@ -29,6 +30,10 @@ class Ruang extends Model
         'updated_at',
         'deleted_at',
     ];
+    /**
+     * @var array
+     */
+    protected $appends = ['nama_lantai'];
 
     public function lantai()
     {
@@ -38,5 +43,10 @@ class Ruang extends Model
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
+    }
+
+    public function getNamaLantaiAttribute()
+    {
+        return Str::title($this->attributes['name']).' - '.Str::title($this->lantai->name);
     }
 }

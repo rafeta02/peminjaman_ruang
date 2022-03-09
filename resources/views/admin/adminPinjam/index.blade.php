@@ -73,71 +73,92 @@
 @parent
 <script>
     $(function () {
-  let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('pinjam_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
-  let deleteButton = {
-    text: deleteButtonTrans,
-    url: "{{ route('admin.pinjams.massDestroy') }}",
-    className: 'btn-danger',
-    action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).data(), function (entry) {
-          return entry.id
-      });
+        let dtOverrideGlobals = {
+            // buttons: dtButtons,
+            processing: true,
+            serverSide: true,
+            retrieve: true,
+            aaSorting: [],
+            ajax: "{{ route('admin.process.index') }}",
+            columns: [{
+                    data: 'placeholder',
+                    name: 'placeholder'
+                },
+                {
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'ruang_name',
+                    name: 'ruang.name'
+                },
+                {
+                    data: 'time_start',
+                    name: 'time_start'
+                },
+                {
+                    data: 'time_end',
+                    name: 'time_end'
+                },
+                {
+                    data: 'time_return',
+                    name: 'time_return'
+                },
+                {
+                    data: 'penggunaan',
+                    name: 'penggunaan'
+                },
+                {
+                    data: 'unit_pengguna',
+                    name: 'unit_pengguna'
+                },
+                {
+                    data: 'status',
+                    name: 'status'
+                },
+                {
+                    data: 'status_text',
+                    name: 'status_text'
+                },
+                {
+                    data: 'borrowed_by_name',
+                    name: 'borrowed_by.name'
+                },
+                {
+                    data: 'processed_by_name',
+                    name: 'processed_by.name'
+                },
+                {
+                    data: 'surat_pengajuan',
+                    name: 'surat_pengajuan',
+                    sortable: false,
+                    searchable: false
+                },
+                {
+                    data: 'actions',
+                    name: '{{ trans('
+                    global.actions ') }}'
+                }
+            ],
+            orderCellsTop: true,
+            order: [
+                [1, 'desc']
+            ],
+            pageLength: 100,
+        };
+        let table = $('.datatable-Pinjam').DataTable(dtOverrideGlobals);
+        $('a[data-toggle="tab"]').on('shown.bs.tab click', function (e) {
+            $($.fn.dataTable.tables(true)).DataTable()
+                .columns.adjust();
+        });
 
-      if (ids.length === 0) {
-        alert('{{ trans('global.datatables.zero_selected') }}')
+        $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-        return
-      }
-
-      if (confirm('{{ trans('global.areYouSure') }}')) {
-        $.ajax({
-          headers: {'x-csrf-token': _token},
-          method: 'POST',
-          url: config.url,
-          data: { ids: ids, _method: 'DELETE' }})
-          .done(function () { location.reload() })
-      }
-    }
-  }
-  dtButtons.push(deleteButton)
-@endcan
-
-  let dtOverrideGlobals = {
-    buttons: dtButtons,
-    processing: true,
-    serverSide: true,
-    retrieve: true,
-    aaSorting: [],
-    ajax: "{{ route('admin.pinjams.index') }}",
-    columns: [
-      { data: 'placeholder', name: 'placeholder' },
-{ data: 'id', name: 'id' },
-{ data: 'ruang_name', name: 'ruang.name' },
-{ data: 'time_start', name: 'time_start' },
-{ data: 'time_end', name: 'time_end' },
-{ data: 'time_return', name: 'time_return' },
-{ data: 'penggunaan', name: 'penggunaan' },
-{ data: 'unit_pengguna', name: 'unit_pengguna' },
-{ data: 'status', name: 'status' },
-{ data: 'status_text', name: 'status_text' },
-{ data: 'borrowed_by_name', name: 'borrowed_by.name' },
-{ data: 'processed_by_name', name: 'processed_by.name' },
-{ data: 'surat_pengajuan', name: 'surat_pengajuan', sortable: false, searchable: false },
-{ data: 'actions', name: '{{ trans('global.actions') }}' }
-    ],
-    orderCellsTop: true,
-    order: [[ 1, 'desc' ]],
-    pageLength: 100,
-  };
-  let table = $('.datatable-Pinjam').DataTable(dtOverrideGlobals);
-  $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
-      $($.fn.dataTable.tables(true)).DataTable()
-          .columns.adjust();
-  });
-  
-});
+    });
 
 </script>
 @endsection

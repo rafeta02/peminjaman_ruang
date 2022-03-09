@@ -152,8 +152,8 @@ return [
         ],
     ],
     'pinjam' => [
-        'title'          => 'Pinjam',
-        'title_singular' => 'Pinjam',
+        'title'          => 'Peminjaman',
+        'title_singular' => 'Peminjaman',
         'fields'         => [
             'id'                     => 'ID',
             'id_helper'              => ' ',
@@ -194,8 +194,8 @@ return [
         'title_singular' => 'Log',
     ],
     'logPinjam' => [
-        'title'          => 'Log Pinjam',
-        'title_singular' => 'Log Pinjam',
+        'title'          => 'Log Peminjaman',
+        'title_singular' => 'Log Peminjaman',
         'fields'         => [
             'id'                => 'ID',
             'id_helper'         => ' ',

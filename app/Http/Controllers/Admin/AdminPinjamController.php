@@ -98,7 +98,7 @@ class AdminPinjamController extends Controller
     {
         abort_if(Gate::denies('pinjam_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $ruangs = Ruang::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $ruangs = Ruang::get()->pluck('nama_lantai', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.adminPinjam.create', compact('ruangs'));
     }

@@ -31,6 +31,12 @@
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('frontend.home') }}">Dashboard Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('frontend.pinjams.create') }}">Tambah Peminjaman</a>
+                </li>
             </ul>
 
             <!-- Right navbar links -->
