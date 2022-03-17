@@ -52,6 +52,9 @@ class PinjamController extends Controller
                 return $row->ruang ? $row->ruang->name : '';
             });
 
+            $table->editColumn('no_hp', function ($row) {
+                return $row->no_hp ? $row->no_hp : '';
+            });
             $table->editColumn('penggunaan', function ($row) {
                 return $row->penggunaan ? $row->penggunaan : '';
             });

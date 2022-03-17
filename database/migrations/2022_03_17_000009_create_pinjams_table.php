@@ -13,6 +13,7 @@ class CreatePinjamsTable extends Migration
             $table->datetime('time_start');
             $table->datetime('time_end');
             $table->datetime('time_return')->nullable();
+            $table->string('no_hp');
             $table->longText('penggunaan');
             $table->string('unit_pengguna')->nullable();
             $table->string('status')->nullable();
