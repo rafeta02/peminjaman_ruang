@@ -9,11 +9,13 @@ use App\Http\Requests\MassDestroyPinjamRequest;
 use App\Http\Requests\StorePinjamRequest;
 use App\Http\Requests\UpdatePinjamRequest;
 use App\Models\Pinjam;
+use App\Models\LogPinjam;
 use App\Models\Ruang;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
+use DB;
 
 class PinjamController extends Controller
 {
@@ -60,7 +62,7 @@ class PinjamController extends Controller
                 Media::whereIn('id', $media)->update(['model_id' => $pinjam->id]);
             }
 
-            $log = LogPeminjaman::create([
+            $log = LogPinjam::create([
                 'peminjaman_id' => $pinjam->id,
                 'jenis' => 'diajukan',
                 'log' => 'Peminjaman ruang : '. $pinjam->ruang->nama_lantai. ' Diajukan oleh "'. $pinjam->borrowed_by->name.'" Untuk tanggal '. $pinjam->WaktuPeminjaman . ' Untuk penggunaan "' . $pinjam->penggunaan .'"',
@@ -68,7 +70,7 @@ class PinjamController extends Controller
 
             $pesan_user = 'Peminjaman ruang : '. $pinjam->ruang->nama_lantai. ' Diajukan oleh "'. $pinjam->borrowed_by->name.'" Untuk tanggal '. $pinjam->WaktuPeminjaman . ' Untuk penggunaan "' . $pinjam->penggunaan .'" Sudah Diproses.';
 
-            return (['pesan_admin' => $log['log'], 'pesan_user' => $pesan_user, 'user' => $data->borrowed_by->no_hp ?? null]);
+            return (['pesan_admin' => $log['log'], 'pesan_user' => $pesan_user, 'user' => $pinjam->no_hp]);
         });
 
         // $this->sendNotification('628156700796', $sukses['pesan_lppm']); // for Admin LPPM

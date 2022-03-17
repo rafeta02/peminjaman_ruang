@@ -53,8 +53,13 @@ class AdminPinjamController extends Controller
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
             });
+
             $table->addColumn('ruang_name', function ($row) {
-                return $row->ruang ? $row->ruang->name : '';
+                return $row->ruang ? $row->ruang->nama_lantai : '';
+            });
+
+            $table->addColumn('waktu_peminjaman', function ($row) {
+                return $row->waktu_peminjaman;
             });
 
             $table->editColumn('penggunaan', function ($row) {

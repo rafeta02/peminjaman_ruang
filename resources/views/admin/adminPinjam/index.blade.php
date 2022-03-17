@@ -22,19 +22,16 @@
 
                     </th>
                     <th>
-                        {{ trans('cruds.pinjam.fields.id') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.pinjam.fields.ruang') }}
                     </th>
                     <th>
-                        {{ trans('cruds.pinjam.fields.time_start') }}
+                        Pemohon
                     </th>
                     <th>
-                        {{ trans('cruds.pinjam.fields.time_end') }}
+                        Tanggal Pengajuan
                     </th>
                     <th>
-                        {{ trans('cruds.pinjam.fields.time_return') }}
+                        Waktu Peminjaman
                     </th>
                     <th>
                         {{ trans('cruds.pinjam.fields.penggunaan') }}
@@ -43,19 +40,13 @@
                         {{ trans('cruds.pinjam.fields.unit_pengguna') }}
                     </th>
                     <th>
+                        {{ trans('cruds.pinjam.fields.surat_pengajuan') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.pinjam.fields.status') }}
                     </th>
                     <th>
                         {{ trans('cruds.pinjam.fields.status_text') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.pinjam.fields.borrowed_by') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.pinjam.fields.processed_by') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.pinjam.fields.surat_pengajuan') }}
                     </th>
                     <th>
                         &nbsp;
@@ -80,29 +71,27 @@
             retrieve: true,
             aaSorting: [],
             ajax: "{{ route('admin.process.index') }}",
-            columns: [{
+            columns: [
+                {
                     data: 'placeholder',
                     name: 'placeholder'
                 },
                 {
-                    data: 'id',
-                    name: 'id'
-                },
-                {
                     data: 'ruang_name',
-                    name: 'ruang.name'
+                    name: 'ruang_name'
                 },
                 {
-                    data: 'time_start',
-                    name: 'time_start'
+                    data: 'borrowed_by_name',
+                    name: 'borrowed_by_name'
                 },
                 {
-                    data: 'time_end',
-                    name: 'time_end'
+                    data: 'borrowed_by_name',
+                    name: 'borrowed_by.name'
                 },
+
                 {
-                    data: 'time_return',
-                    name: 'time_return'
+                    data: 'waktu_peminjaman',
+                    name: 'waktu_peminjaman'
                 },
                 {
                     data: 'penggunaan',
@@ -113,6 +102,12 @@
                     name: 'unit_pengguna'
                 },
                 {
+                    data: 'surat_pengajuan',
+                    name: 'surat_pengajuan',
+                    sortable: false,
+                    searchable: false
+                },
+                {
                     data: 'status',
                     name: 'status'
                 },
@@ -121,23 +116,8 @@
                     name: 'status_text'
                 },
                 {
-                    data: 'borrowed_by_name',
-                    name: 'borrowed_by.name'
-                },
-                {
-                    data: 'processed_by_name',
-                    name: 'processed_by.name'
-                },
-                {
-                    data: 'surat_pengajuan',
-                    name: 'surat_pengajuan',
-                    sortable: false,
-                    searchable: false
-                },
-                {
                     data: 'actions',
-                    name: '{{ trans('
-                    global.actions ') }}'
+                    name: '{{ trans('global.actions ') }}'
                 }
             ],
             orderCellsTop: true,
