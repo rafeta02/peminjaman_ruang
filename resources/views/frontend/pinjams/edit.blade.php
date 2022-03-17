@@ -48,6 +48,16 @@
                             <span class="help-block">{{ trans('cruds.pinjam.fields.time_end_helper') }}</span>
                         </div>
                         <div class="form-group">
+                            <label class="required" for="no_hp">{{ trans('cruds.pinjam.fields.no_hp') }}</label>
+                            <input class="form-control" type="text" name="no_hp" id="no_hp" value="{{ old('no_hp', $pinjam->no_hp) }}" required>
+                            @if($errors->has('no_hp'))
+                                <div class="invalid-feedback">
+                                    {{ $errors->first('no_hp') }}
+                                </div>
+                            @endif
+                            <span class="help-block">{{ trans('cruds.pinjam.fields.no_hp_helper') }}</span>
+                        </div>
+                        <div class="form-group">
                             <label class="required" for="penggunaan">{{ trans('cruds.pinjam.fields.penggunaan') }}</label>
                             <textarea class="form-control" name="penggunaan" id="penggunaan" required>{{ old('penggunaan', $pinjam->penggunaan) }}</textarea>
                             @if($errors->has('penggunaan'))

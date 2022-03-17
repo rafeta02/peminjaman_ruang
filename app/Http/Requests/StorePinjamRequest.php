@@ -29,6 +29,10 @@ class StorePinjamRequest extends FormRequest
                 'required',
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.clock_format'),
             ],
+            'no_hp' => [
+                'string',
+                'required',
+            ],
             'penggunaan' => [
                 'required',
             ],

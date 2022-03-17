@@ -187,6 +187,8 @@ return [
             'deleted_at_helper'      => ' ',
             'created_by'             => 'Created By',
             'created_by_helper'      => ' ',
+            'no_hp'                  => 'No Handphone',
+            'no_hp_helper'           => ' ',
         ],
     ],
     'log' => [

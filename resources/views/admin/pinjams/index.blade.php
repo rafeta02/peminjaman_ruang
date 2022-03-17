@@ -37,6 +37,9 @@
                         {{ trans('cruds.pinjam.fields.time_return') }}
                     </th>
                     <th>
+                        {{ trans('cruds.pinjam.fields.no_hp') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.pinjam.fields.penggunaan') }}
                     </th>
                     <th>
@@ -118,6 +121,7 @@
 { data: 'time_start', name: 'time_start' },
 { data: 'time_end', name: 'time_end' },
 { data: 'time_return', name: 'time_return' },
+{ data: 'no_hp', name: 'no_hp' },
 { data: 'penggunaan', name: 'penggunaan' },
 { data: 'unit_pengguna', name: 'unit_pengguna' },
 { data: 'status', name: 'status' },

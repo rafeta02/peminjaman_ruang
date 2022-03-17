@@ -29,6 +29,9 @@
                                         Waktu Peminjaman
                                     </th>
                                     <th>
+                                        {{ trans('cruds.pinjam.fields.no_hp') }}
+                                    </th>
+                                    <th>
                                         {{ trans('cruds.pinjam.fields.penggunaan') }}
                                     </th>
                                     <th>
@@ -50,6 +53,9 @@
                                         </td>
                                         <td>
                                             {{ $pinjam->waktu_peminjaman ?? '' }}
+                                        </td>
+                                        <td>
+                                            {{ $pinjam->no_hp ?? '' }}
                                         </td>
                                         <td>
                                             {{ $pinjam->penggunaan ?? '' }}

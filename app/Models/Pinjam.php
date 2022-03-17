@@ -51,6 +51,7 @@ class Pinjam extends Model implements HasMedia
         'time_start',
         'time_end',
         'time_return',
+        'no_hp',
         'penggunaan',
         'unit_pengguna',
         'status',
