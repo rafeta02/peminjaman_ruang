@@ -60,6 +60,14 @@
                                 </tr>
                                 <tr>
                                     <th>
+                                        {{ trans('cruds.pinjam.fields.no_hp') }}
+                                    </th>
+                                    <td>
+                                        {{ $pinjam->no_hp }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
                                         {{ trans('cruds.pinjam.fields.penggunaan') }}
                                     </th>
                                     <td>
