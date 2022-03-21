@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Requests\MassDestroyRuangRequest;
 use App\Http\Requests\StoreRuangRequest;
 use App\Http\Requests\UpdateRuangRequest;
@@ -10,11 +11,14 @@ use App\Models\Lantai;
 use App\Models\Ruang;
 use Gate;
 use Illuminate\Http\Request;
+use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 
 class RuangController extends Controller
 {
+    use MediaUploadingTrait;
+
     public function index(Request $request)
     {
         abort_if(Gate::denies('ruang_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -54,8 +58,19 @@ class RuangController extends Controller
             $table->editColumn('kapasitas', function ($row) {
                 return $row->kapasitas ? $row->kapasitas : '';
             });
+            $table->editColumn('images', function ($row) {
+                if (!$row->images) {
+                    return '';
+                }
+                $links = [];
+                foreach ($row->images as $media) {
+                    $links[] = '<a href="' . $media->getUrl() . '" target="_blank"><img src="' . $media->getUrl('thumb') . '" width="50px" height="50px"></a>';
+                }
 
-            $table->rawColumns(['actions', 'placeholder', 'lantai']);
+                return implode(' ', $links);
+            });
+
+            $table->rawColumns(['actions', 'placeholder', 'lantai', 'images']);
 
             return $table->make(true);
         }
@@ -76,6 +91,14 @@ class RuangController extends Controller
     {
         $ruang = Ruang::create($request->all());
 
+        foreach ($request->input('images', []) as $file) {
+            $ruang->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('images');
+        }
+
+        if ($media = $request->input('ck-media', false)) {
+            Media::whereIn('id', $media)->update(['model_id' => $ruang->id]);
+        }
+
         return redirect()->route('admin.ruangs.index');
     }
 
@@ -93,6 +116,20 @@ class RuangController extends Controller
     public function update(UpdateRuangRequest $request, Ruang $ruang)
     {
         $ruang->update($request->all());
+
+        if (count($ruang->images) > 0) {
+            foreach ($ruang->images as $media) {
+                if (!in_array($media->file_name, $request->input('images', []))) {
+                    $media->delete();
+                }
+            }
+        }
+        $media = $ruang->images->pluck('file_name')->toArray();
+        foreach ($request->input('images', []) as $file) {
+            if (count($media) === 0 || !in_array($file, $media)) {
+                $ruang->addMedia(storage_path('tmp/uploads/' . basename($file)))->toMediaCollection('images');
+            }
+        }
 
         return redirect()->route('admin.ruangs.index');
     }
@@ -120,5 +157,17 @@ class RuangController extends Controller
         Ruang::whereIn('id', request('ids'))->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function storeCKEditorImages(Request $request)
+    {
+        abort_if(Gate::denies('ruang_create') && Gate::denies('ruang_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $model         = new Ruang();
+        $model->id     = $request->input('crud_id', 0);
+        $model->exists = true;
+        $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
+
+        return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
     }
 }

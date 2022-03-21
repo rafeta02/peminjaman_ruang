@@ -5,6 +5,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('lantais', 'LantaiApiController');
 
     // Ruang
+    Route::post('ruangs/media', 'RuangApiController@storeMedia')->name('ruangs.storeMedia');
     Route::apiResource('ruangs', 'RuangApiController');
 
     // Pinjam
