@@ -34,6 +34,9 @@
                         {{ trans('cruds.ruang.fields.kapasitas') }}
                     </th>
                     <th>
+                        {{ trans('cruds.ruang.fields.images') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -93,6 +96,7 @@
 { data: 'lantai_name', name: 'lantai.name' },
 { data: 'name', name: 'name' },
 { data: 'kapasitas', name: 'kapasitas' },
+{ data: 'images', name: 'images', sortable: false, searchable: false },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

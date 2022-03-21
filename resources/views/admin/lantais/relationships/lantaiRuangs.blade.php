@@ -34,6 +34,9 @@
                                 {{ trans('cruds.ruang.fields.kapasitas') }}
                             </th>
                             <th>
+                                {{ trans('cruds.ruang.fields.images') }}
+                            </th>
+                            <th>
                                 &nbsp;
                             </th>
                         </tr>
@@ -55,6 +58,13 @@
                                 </td>
                                 <td>
                                     {{ $ruang->kapasitas ?? '' }}
+                                </td>
+                                <td>
+                                    @foreach($ruang->images as $key => $media)
+                                        <a href="{{ $media->getUrl() }}" target="_blank" style="display: inline-block">
+                                            <img src="{{ $media->getUrl('thumb') }}">
+                                        </a>
+                                    @endforeach
                                 </td>
                                 <td>
                                     @can('ruang_show')

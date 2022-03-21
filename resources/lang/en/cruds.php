@@ -149,6 +149,8 @@ return [
             'deleted_at_helper' => ' ',
             'slug'              => 'Slug',
             'slug_helper'       => ' ',
+            'images'            => 'Images',
+            'images_helper'     => ' ',
         ],
     ],
     'pinjam' => [
