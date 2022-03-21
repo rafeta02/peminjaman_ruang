@@ -4,20 +4,25 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
+use App\Http\Controllers\Traits\WaBlastTrait;
 use App\Http\Requests\MassDestroyPinjamRequest;
 use App\Http\Requests\StorePinjamRequest;
 use App\Http\Requests\UpdatePinjamRequest;
 use App\Models\Pinjam;
 use App\Models\Ruang;
+use App\Models\LogPinjam;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use DB;
+use Carbon\Carbon;
 
 class AdminPinjamController extends Controller
 {
     use MediaUploadingTrait;
+    use WaBlastTrait;
 
     /**
      * Display a listing of the resource.
@@ -41,7 +46,7 @@ class AdminPinjamController extends Controller
                 $deleteGate = 'pinjam_delete';
                 $crudRoutePart = 'pinjams';
 
-                return view('partials.datatablesActions', compact(
+                return view('partials.admintablesActions', compact(
                 'viewGate',
                 'editGate',
                 'deleteGate',
@@ -55,7 +60,7 @@ class AdminPinjamController extends Controller
             });
 
             $table->addColumn('ruang_name', function ($row) {
-                return $row->ruang ? $row->ruang->nama_lantai : '';
+                return $row->ruang ? '<b>'.$row->ruang->nama_lantai.'</b>' : '';
             });
 
             $table->addColumn('waktu_peminjaman', function ($row) {
@@ -69,13 +74,17 @@ class AdminPinjamController extends Controller
                 return $row->unit_pengguna ? Pinjam::UNIT_PENGGUNA_SELECT[$row->unit_pengguna] : '';
             });
             $table->editColumn('status', function ($row) {
-                return $row->status ? Pinjam::STATUS_SELECT[$row->status] : '';
+                if ($row->status == 'ditolak') {
+                    return '<span class="badge badge-danger">Ditolak<br>("'. $row->status_text. '")</span>';
+                } else {
+                    return '<span class="badge badge-'.Pinjam::STATUS_BACKGROUND[$row->status].'">'.Pinjam::STATUS_SELECT[$row->status].'</span><br>';
+                }
             });
             $table->editColumn('status_text', function ($row) {
                 return $row->status_text ? $row->status_text : '';
             });
             $table->addColumn('borrowed_by_name', function ($row) {
-                return $row->borrowed_by ? $row->borrowed_by->name : '';
+                return $row->borrowed_by ? ('<u>'.$row->borrowed_by->name.'</u><br>No HP :<br>('.($row->no_hp ?? $row->borrowed_by->no_hp).')') : '';
             });
 
             $table->addColumn('processed_by_name', function ($row) {
@@ -83,10 +92,14 @@ class AdminPinjamController extends Controller
             });
 
             $table->editColumn('surat_pengajuan', function ($row) {
-                return $row->surat_pengajuan ? '<a href="' . $row->surat_pengajuan->getUrl() . '" target="_blank">' . trans('global.downloadFile') . '</a>' : '';
+                return $row->surat_pengajuan ? '<a href="' . $row->surat_pengajuan->getFullUrl() . '" target="_blank">' . trans('global.downloadFile') . '</a>' : '';
             });
 
-            $table->rawColumns(['actions', 'placeholder', 'ruang', 'borrowed_by', 'processed_by', 'surat_pengajuan']);
+            $table->addColumn('tanggal_pengajuan', function ($row) {
+                return $row->tanggal_pengajuan;
+            });
+
+            $table->rawColumns(['actions', 'placeholder', 'ruang_name', 'borrowed_by_name', 'processed_by', 'surat_pengajuan', 'status']);
 
             return $table->make(true);
         }
@@ -101,11 +114,7 @@ class AdminPinjamController extends Controller
      */
     public function create()
     {
-        abort_if(Gate::denies('pinjam_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $ruangs = Ruang::get()->pluck('nama_lantai', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.adminPinjam.create', compact('ruangs'));
+        //
     }
 
     /**
@@ -116,17 +125,7 @@ class AdminPinjamController extends Controller
      */
     public function store(StorePinjamRequest $request)
     {
-        $pinjam = Pinjam::create($request->all());
-
-        if ($request->input('surat_pengajuan', false)) {
-            $pinjam->addMedia(storage_path('tmp/uploads/' . basename($request->input('surat_pengajuan'))))->toMediaCollection('surat_pengajuan');
-        }
-
-        if ($media = $request->input('ck-media', false)) {
-            Media::whereIn('id', $media)->update(['model_id' => $pinjam->id]);
-        }
-
-        return redirect()->route('admin.adminPinjam.index');
+        //
     }
 
     /**
@@ -135,13 +134,13 @@ class AdminPinjamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Pinjam $pinjam)
+    public function show($id)
     {
         abort_if(Gate::denies('pinjam_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $pinjam->load('ruang', 'borrowed_by', 'processed_by', 'created_by');
+        $pinjam = Pinjam::with('ruang', 'borrowed_by', 'processed_by', 'created_by')->find($id);
 
-        return view('admin.pinjams.show', compact('pinjam'));
+        return view('admin.adminPinjam.show', compact('pinjam'));
     }
 
     /**
@@ -152,13 +151,7 @@ class AdminPinjamController extends Controller
      */
     public function edit(Pinjam $pinjam)
     {
-        abort_if(Gate::denies('pinjam_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $ruangs = Ruang::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $pinjam->load('ruang', 'borrowed_by', 'processed_by', 'created_by');
-
-        return view('admin.pinjams.edit', compact('pinjam', 'ruangs'));
+        //
     }
 
     /**
@@ -170,20 +163,7 @@ class AdminPinjamController extends Controller
      */
     public function update(UpdatePinjamRequest $request, Pinjam $pinjam)
     {
-        $pinjam->update($request->all());
-
-        if ($request->input('surat_pengajuan', false)) {
-            if (!$pinjam->surat_pengajuan || $request->input('surat_pengajuan') !== $pinjam->surat_pengajuan->file_name) {
-                if ($pinjam->surat_pengajuan) {
-                    $pinjam->surat_pengajuan->delete();
-                }
-                $pinjam->addMedia(storage_path('tmp/uploads/' . basename($request->input('surat_pengajuan'))))->toMediaCollection('surat_pengajuan');
-            }
-        } elseif ($pinjam->surat_pengajuan) {
-            $pinjam->surat_pengajuan->delete();
-        }
-
-        return redirect()->route('admin.pinjams.index');
+        //
     }
 
     /**
@@ -194,29 +174,60 @@ class AdminPinjamController extends Controller
      */
     public function destroy(Pinjam $pinjam)
     {
-        abort_if(Gate::denies('pinjam_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $pinjam->delete();
-
-        return back();
+        //
     }
 
-    public function massDestroy(MassDestroyPinjamRequest $request)
+    public function acceptPengajuan(Request $request)
     {
-        Pinjam::whereIn('id', request('ids'))->delete();
+        try {
+            $sukses = DB::transaction(function() use ($request) {
+                $data = Pinjam::find($request->id);
+                $data->status = 'disetujui';
+                $data->status_text = 'Peminjaman ruang "'. $data->ruang->nama_lantai .'" Disetujui oleh "'. auth()->user()->name .'"';
 
-        return response(null, Response::HTTP_NO_CONTENT);
+                $log = LogPinjam::create([
+                    'peminjaman_id' => $data->id,
+                    'jenis' => 'disetujui',
+                    'log' => 'Peminjaman ruang '. $data->ruang->nama_lantai. ' Untuk tanggal '. $data->WaktuPeminjaman . '  telah Disetujui oleh "'. auth()->user()->name,
+                ]);
+
+                $data->save();
+
+                return (['user' => $data->no_hp, 'pesan' => $log['log']]);
+            });
+
+            $this->sendNotification($sukses['user'], $sukses['pesan']); // for User
+
+            return response()->json(['status' => 'success', 'message' => 'Pengajuan berhasil disetujui']);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 
-    public function storeCKEditorImages(Request $request)
+    public function reject(Request $request)
     {
-        abort_if(Gate::denies('pinjam_create') && Gate::denies('pinjam_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        try {
+            $sukses = DB::transaction(function() use ($request) {
+                $data = Pinjam::find($request->pinjam_id);
+                $data->status = 'ditolak';
+                $data->status_text = $request->reason_rejection;
 
-        $model         = new Pinjam();
-        $model->id     = $request->input('crud_id', 0);
-        $model->exists = true;
-        $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
+                $log = LogPinjam::create([
+                    'peminjaman_id' => $data->id,
+                    'jenis' => 'disetujui',
+                    'log' => 'Peminjaman ruang '. $data->ruang->nama_lantai. ' Untuk tanggal '. $data->WaktuPeminjaman . ' telah Ditolak oleh "'. auth()->user()->name .'" dengan alasan "'. $data->status_text .'", Peminjaman ditolak.',
+                ]);
 
-        return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
+                $data->save();
+
+                return (['pesan' => $log['log'], 'user' => $data->no_hp]);
+            });
+
+            $this->sendNotification($sukses['user'], $sukses['pesan']); // for User
+
+            return response()->json(['status' => 'success', 'message' => 'Peminjaman telah ditolak']);
+        } catch (Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 }

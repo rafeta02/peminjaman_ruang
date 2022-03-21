@@ -12,58 +12,31 @@
                 <div class="card-body">
                     <div class="form-group">
                         <div class="form-group">
-                            <a class="btn btn-default" href="{{ route('frontend.pinjams.index') }}">
+                            <a class="btn btn-primary" href="{{ route('frontend.pinjams.index') }}">
                                 {{ trans('global.back_to_list') }}
                             </a>
+                            @if($pinjam->status == 'diajukan')
+                                <a class="btn btn-info" href="{{ route('frontend.pinjams.edit', $pinjam->id) }}">
+                                    {{ trans('global.edit') }}
+                                </a>
+                            @endif
                         </div>
                         <table class="table table-bordered table-striped">
                             <tbody>
                                 <tr>
                                     <th>
-                                        {{ trans('cruds.pinjam.fields.id') }}
-                                    </th>
-                                    <td>
-                                        {{ $pinjam->id }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
                                         {{ trans('cruds.pinjam.fields.ruang') }}
                                     </th>
                                     <td>
-                                        {{ $pinjam->ruang->name ?? '' }}
+                                        {{ $pinjam->ruang->nama_lantai ?? '' }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>
-                                        {{ trans('cruds.pinjam.fields.time_start') }}
+                                        {{ trans('cruds.pinjam.fields.waktu_peminjaman') }}
                                     </th>
                                     <td>
-                                        {{ $pinjam->time_start }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.pinjam.fields.time_end') }}
-                                    </th>
-                                    <td>
-                                        {{ $pinjam->time_end }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.pinjam.fields.time_return') }}
-                                    </th>
-                                    <td>
-                                        {{ $pinjam->time_return }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.pinjam.fields.no_hp') }}
-                                    </th>
-                                    <td>
-                                        {{ $pinjam->no_hp }}
+                                        {{ $pinjam->waktu_peminjaman }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -87,15 +60,19 @@
                                         {{ trans('cruds.pinjam.fields.status') }}
                                     </th>
                                     <td>
-                                        {{ App\Models\Pinjam::STATUS_SELECT[$pinjam->status] ?? '' }}
+                                        <span class="badge badge-{{ App\Models\Pinjam::STATUS_BACKGROUND[$pinjam->status] }}">{{ App\Models\Pinjam::STATUS_SELECT[$pinjam->status] }}</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>
-                                        {{ trans('cruds.pinjam.fields.status_text') }}
+                                        Status Proses
                                     </th>
                                     <td>
-                                        {{ $pinjam->status_text }}
+                                        @if ($pinjam->status == 'ditolak')
+                                            Peminjaman "ditolak" dengan alasan "{{ $pinjam->status_text }}"
+                                        @else
+                                            {{ $pinjam->status_text }}
+                                        @endif
                                     </td>
                                 </tr>
                                 <tr>
@@ -103,15 +80,8 @@
                                         {{ trans('cruds.pinjam.fields.borrowed_by') }}
                                     </th>
                                     <td>
-                                        {{ $pinjam->borrowed_by->name ?? '' }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.pinjam.fields.processed_by') }}
-                                    </th>
-                                    <td>
-                                        {{ $pinjam->processed_by->name ?? '' }}
+                                        <u>{{ $pinjam->borrowed_by->name ?? '' }}</u><br>
+                                        ({{ $pinjam->no_hp ?? $pinjam->borrowed_by->no_hp }})
                                     </td>
                                 </tr>
                                 <tr>
@@ -129,7 +99,7 @@
                             </tbody>
                         </table>
                         <div class="form-group">
-                            <a class="btn btn-default" href="{{ route('frontend.pinjams.index') }}">
+                            <a class="btn btn-primary" href="{{ route('frontend.pinjams.index') }}">
                                 {{ trans('global.back_to_list') }}
                             </a>
                         </div>

@@ -23,7 +23,7 @@
             </div>
             <div class="form-group">
                 <label class="required" for="time_start">{{ trans('cruds.pinjam.fields.time_start') }}</label>
-                <input class="form-control datetime {{ $errors->has('time_start') ? 'is-invalid' : '' }}" type="text" name="time_start" id="time_start" value="{{ old('time_start') }}" required>
+                <input class="form-control datetime-picker {{ $errors->has('time_start') ? 'is-invalid' : '' }}" type="text" name="time_start" id="time_start" value="{{ old('time_start') }}" required>
                 @if($errors->has('time_start'))
                     <span class="text-danger">{{ $errors->first('time_start') }}</span>
                 @endif
@@ -31,7 +31,7 @@
             </div>
             <div class="form-group">
                 <label class="required" for="time_end">{{ trans('cruds.pinjam.fields.time_end') }}</label>
-                <input class="form-control datetime {{ $errors->has('time_end') ? 'is-invalid' : '' }}" type="text" name="time_end" id="time_end" value="{{ old('time_end') }}" required>
+                <input class="form-control datetime-picker {{ $errors->has('time_end') ? 'is-invalid' : '' }}" type="text" name="time_end" id="time_end" value="{{ old('time_end') }}" required>
                 @if($errors->has('time_end'))
                     <span class="text-danger">{{ $errors->first('time_end') }}</span>
                 @endif

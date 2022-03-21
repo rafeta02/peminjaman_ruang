@@ -38,7 +38,7 @@ class PinjamController extends Controller
         $ruangs = Ruang::get()->pluck('nama_lantai', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         if ($request->ruang) {
-            session()->flashInput(['ruang_id' => $request->kendaraan]);
+            session()->flashInput(['ruang_id' => $request->ruang]);
         }
 
         return view('frontend.pinjams.create', compact('ruangs'));

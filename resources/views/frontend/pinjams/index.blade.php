@@ -28,9 +28,9 @@
                                     <th class="text-center">
                                         Waktu Peminjaman
                                     </th>
-                                    <th>
+                                    {{-- <th>
                                         {{ trans('cruds.pinjam.fields.no_hp') }}
-                                    </th>
+                                    </th> --}}
                                     <th>
                                         {{ trans('cruds.pinjam.fields.penggunaan') }}
                                     </th>
@@ -54,9 +54,9 @@
                                         <td>
                                             {{ $pinjam->waktu_peminjaman ?? '' }}
                                         </td>
-                                        <td>
+                                        {{-- <td>
                                             {{ $pinjam->no_hp ?? '' }}
-                                        </td>
+                                        </td> --}}
                                         <td>
                                             {{ $pinjam->penggunaan ?? '' }}
                                         </td>
@@ -67,25 +67,25 @@
                                             @include('partials.statusPinjam')
                                         </td>
                                         <td>
-                                            @can('pinjam_show')
-                                                <a class="btn btn-sm btn-primary btn-block mb-1" href="{{ route('frontend.pinjams.show', $pinjam->id) }}">
-                                                    {{ trans('global.view') }}
-                                                </a>
-                                            @endcan
+                                            <a class="btn btn-sm btn-primary btn-block mb-1" href="{{ route('frontend.pinjams.show', $pinjam->id) }}">
+                                                {{ trans('global.view') }}
+                                            </a>
 
-                                            @can('pinjam_edit')
+                                            @if($pinjam->status == 'diajukan')
                                                 <a class="btn btn-sm btn-info btn-block mb-1" href="{{ route('frontend.pinjams.edit', $pinjam->id) }}">
                                                     {{ trans('global.edit') }}
                                                 </a>
-                                            @endcan
+                                            @endif
 
-                                            @can('pinjam_delete')
-                                                <form action="{{ route('frontend.pinjams.destroy', $pinjam->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');">
-                                                    <input type="hidden" name="_method" value="DELETE">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                    <input type="submit" class="btn btn-sm btn-danger btn-block mb-1" value="{{ trans('global.delete') }}">
-                                                </form>
-                                            @endcan
+                                            @if($pinjam->status == 'diajukan')
+                                                @can('pinjam_delete')
+                                                    <form action="{{ route('frontend.pinjams.destroy', $pinjam->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                        <input type="submit" class="btn btn-sm btn-danger btn-block mb-1" value="{{ trans('global.delete') }}">
+                                                    </form>
+                                                @endcan
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

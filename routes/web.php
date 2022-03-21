@@ -43,6 +43,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('process/destroy', 'AdminPinjamController@massDestroy')->name('process.massDestroy');
     Route::post('process/media', 'AdminPinjamController@storeMedia')->name('process.storeMedia');
     Route::post('process/ckmedia', 'AdminPinjamController@storeCKEditorImages')->name('process.storeCKEditorImages');
+    Route::post('process/accept', 'AdminPinjamController@acceptPengajuan')->name('process.accept');
+    Route::post('process/reject', 'AdminPinjamController@reject')->name('process.reject');
     Route::resource('process', 'AdminPinjamController');
 
     // Log Pinjam

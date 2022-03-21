@@ -28,7 +28,14 @@ class Pinjam extends Model implements HasMedia
         'diajukan'  => 'Diajukan',
         'disetujui' => 'Disetujui',
         'ditolak'   => 'Ditolak',
-        'selesai'   => 'Selesai',
+        // 'selesai'   => 'Selesai',
+    ];
+
+    public const STATUS_BACKGROUND = [
+        'diajukan' => 'primary',
+        'disetujui' => 'warning',
+        'ditolak'  => 'danger',
+        // 'selesai'  => 'dark',
     ];
 
     public $table = 'pinjams';

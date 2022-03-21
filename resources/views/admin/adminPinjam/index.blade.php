@@ -1,17 +1,8 @@
 @extends('layouts.admin')
 @section('content')
-@can('pinjam_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.pinjams.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.pinjam.title_singular') }}
-            </a>
-        </div>
-    </div>
-@endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.pinjam.title_singular') }} {{ trans('global.list') }}
+        List Pengajuan Peminjaman Ruang
     </div>
 
     <div class="card-body">
@@ -46,9 +37,6 @@
                         {{ trans('cruds.pinjam.fields.status') }}
                     </th>
                     <th>
-                        {{ trans('cruds.pinjam.fields.status_text') }}
-                    </th>
-                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -57,11 +45,35 @@
     </div>
 </div>
 
-
+<div class="modal fade" id="rejectionModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Reason Rejection</h4>
+            </div>
+            <div class="modal-body">
+                <form id="rejectionForm" class="form-horizontal">
+                   <input type="hidden" name="pinjam_id" id="rejection_pinjam_id">
+                    <div class="form-group">
+                        <label for="driver" class="col-sm-2 control-label">Reason</label>
+                        <div class="col-sm-12">
+                            <textarea class="form-control" name="reason_rejection" id="reason_rejection"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger" id="rejectionBtn" value="save">Reject</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 @section('scripts')
 @parent
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     $(function () {
         let dtOverrideGlobals = {
@@ -85,10 +97,9 @@
                     name: 'borrowed_by_name'
                 },
                 {
-                    data: 'borrowed_by_name',
-                    name: 'borrowed_by.name'
+                    data: 'tanggal_pengajuan',
+                    name: 'tanggal_pengajuan'
                 },
-
                 {
                     data: 'waktu_peminjaman',
                     name: 'waktu_peminjaman'
@@ -112,10 +123,6 @@
                     name: 'status'
                 },
                 {
-                    data: 'status_text',
-                    name: 'status_text'
-                },
-                {
                     data: 'actions',
                     name: '{{ trans('global.actions ') }}'
                 }
@@ -133,10 +140,87 @@
         });
 
         $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('body').on('click', '.button-accept', function () {
+            event.preventDefault();
+            const id = $(this).data('id');
+            swal({
+                title: 'Apakah pengajuan akan disetujui ?',
+                text: 'Pengajuan peminjaman ruangan akan disetujui',
+                icon: 'warning',
+                buttons: ["Cancel", "Yes!"],
+                showSpinner: true
+            }).then(function(value) {
+                if (value) {
+                    $(".overlay-loading").css("display", "block");
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('admin.process.accept') }}",
+                        data: {
+                            id: id
+                        },
+                        success: function (response) {
+                            $(".overlay-loading").css("display", "none");
+                            $('#rejectionForm').trigger("reset");
+                            if (response.status == 'success') {
+                                table.ajax.reload();
+                                swal("Success", response.message, "success");
+                            } else {
+                                swal("Warning!", response.message, 'error');
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        $('body').on('click', '.button-reject', function () {
+            event.preventDefault();
+            const id = $(this).data('id');
+            $('#rejection_pinjam_id').val(id);
+            $('#rejectionModal').modal('show');
+        });
+
+        $('#rejectionBtn').click(function (e) {
+            e.preventDefault();
+            if (!$.trim($("#reason_rejection").val())) {
+                swal("Warning!", 'Reason is empty', 'error');
+                return;
+            } else {
+                swal({
+                    title: 'Apakah pengajuan akan ditolak ?',
+                    text: 'Pengajuan peminjaman ruang akan ditolak',
+                    icon: 'warning',
+                    buttons: ["Cancel", "Yes!"],
+                    showSpinner: true
+                }).then(function(value) {
+                    if (value) {
+                        $('#rejectionModal').modal('hide');
+                        $(".overlay-loading").css("display", "block");
+                        $.ajax({
+                            data: $('#rejectionForm').serialize(),
+                            url: "{{ route('admin.process.reject') }}",
+                            type: "POST",
+                            dataType: 'json',
+                            success: function (response) {
+                                $(".overlay-loading").css("display", "none");
+                                $('#rejectionForm').trigger("reset");
+                                if (response.status == 'success') {
+                                    table.ajax.reload();
+                                    swal("Success", response.message, 'success');
+                                } else {
+                                    swal("Warning!", response.message, 'error');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
 
     });
 
