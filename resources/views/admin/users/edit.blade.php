@@ -51,6 +51,46 @@
                 <span class="help-block">{{ trans('cruds.user.fields.roles_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="nip">{{ trans('cruds.user.fields.nip') }}</label>
+                <input class="form-control {{ $errors->has('nip') ? 'is-invalid' : '' }}" type="text" name="nip" id="nip" value="{{ old('nip', $user->nip) }}">
+                @if($errors->has('nip'))
+                    <span class="text-danger">{{ $errors->first('nip') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.user.fields.nip_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="no_identitas">{{ trans('cruds.user.fields.no_identitas') }}</label>
+                <input class="form-control {{ $errors->has('no_identitas') ? 'is-invalid' : '' }}" type="text" name="no_identitas" id="no_identitas" value="{{ old('no_identitas', $user->no_identitas) }}">
+                @if($errors->has('no_identitas'))
+                    <span class="text-danger">{{ $errors->first('no_identitas') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.user.fields.no_identitas_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="nama">{{ trans('cruds.user.fields.nama') }}</label>
+                <input class="form-control {{ $errors->has('nama') ? 'is-invalid' : '' }}" type="text" name="nama" id="nama" value="{{ old('nama', $user->nama) }}">
+                @if($errors->has('nama'))
+                    <span class="text-danger">{{ $errors->first('nama') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.user.fields.nama_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="alamat">{{ trans('cruds.user.fields.alamat') }}</label>
+                <input class="form-control {{ $errors->has('alamat') ? 'is-invalid' : '' }}" type="text" name="alamat" id="alamat" value="{{ old('alamat', $user->alamat) }}">
+                @if($errors->has('alamat'))
+                    <span class="text-danger">{{ $errors->first('alamat') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.user.fields.alamat_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="no_hp">{{ trans('cruds.user.fields.no_hp') }}</label>
+                <input class="form-control {{ $errors->has('no_hp') ? 'is-invalid' : '' }}" type="text" name="no_hp" id="no_hp" value="{{ old('no_hp', $user->no_hp) }}">
+                @if($errors->has('no_hp'))
+                    <span class="text-danger">{{ $errors->first('no_hp') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.user.fields.no_hp_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

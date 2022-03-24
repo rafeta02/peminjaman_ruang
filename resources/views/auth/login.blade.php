@@ -60,14 +60,18 @@
                     <!-- /.col -->
                 </div>
             </form>
-            <hr>
-            <div class="text-center mt-2 mb-3">
-                <h5 class="mb-4">Atau login dengan:</h5>
-                <a href="#">
-                    {{-- {{ route('auth.login.sso') }} --}}
-                    <img src="{{ asset('img/sso.jpg') }}" style="height:75px; width:auto">
-                </a>
-            </div>
+
+
+            @if(Route::has('password.request'))
+                <p class="mb-1">
+                    <a href="{{ route('password.request') }}">
+                        {{ trans('global.forgot_password') }}
+                    </a>
+                </p>
+            @endif
+            <p class="mb-1">
+
+            </p>
         </div>
         <!-- /.login-card-body -->
     </div>
