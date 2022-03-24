@@ -32,26 +32,6 @@ class UpdateUserRequest extends FormRequest
                 'required',
                 'array',
             ],
-            'nip' => [
-                'string',
-                'nullable',
-            ],
-            'no_identitas' => [
-                'string',
-                'nullable',
-            ],
-            'nama' => [
-                'string',
-                'nullable',
-            ],
-            'alamat' => [
-                'string',
-                'nullable',
-            ],
-            'no_hp' => [
-                'string',
-                'nullable',
-            ],
         ];
     }
 }

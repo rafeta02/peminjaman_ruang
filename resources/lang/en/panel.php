@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'site_title' => 'Peminjaman Ruang',
+    'site_title' => 'Portal Peminjaman Ruang',
 ];

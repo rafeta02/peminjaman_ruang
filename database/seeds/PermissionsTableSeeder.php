@@ -190,6 +190,40 @@ class PermissionsTableSeeder extends Seeder
             ],
         ];
 
+        $mypermissions = [
+            [
+                'title' => 'process_access',
+            ],
+            [
+                'title' => 'process_show',
+            ],
+            [
+                'title' => 'process_accept',
+            ],
+            [
+                'title' => 'process_selesai',
+            ],
+            [
+                'title' => 'admin_page',
+            ],
+            [
+                'title' => 'front_dashboard',
+            ],
+            [
+                'title' => 'front_ruangan',
+            ],
+            [
+                'title' => 'front_pinjam',
+            ],
+            [
+                'title' => 'is_admin',
+            ],
+            [
+                'title' => 'is_adminlppm',
+            ]
+        ];
+
         Permission::insert($permissions);
+        Permission::insert($mypermissions);
     }
 }

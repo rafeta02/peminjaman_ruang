@@ -38,12 +38,6 @@
                                         {{ trans('cruds.user.fields.roles') }}
                                     </th>
                                     <th>
-                                        {{ trans('cruds.user.fields.nip') }}
-                                    </th>
-                                    <th>
-                                        {{ trans('cruds.user.fields.nama') }}
-                                    </th>
-                                    <th>
                                         &nbsp;
                                     </th>
                                 </tr>
@@ -67,12 +61,6 @@
                                             @foreach($user->roles as $key => $item)
                                                 <span>{{ $item->title }}</span>
                                             @endforeach
-                                        </td>
-                                        <td>
-                                            {{ $user->nip ?? '' }}
-                                        </td>
-                                        <td>
-                                            {{ $user->nama ?? '' }}
                                         </td>
                                         <td>
                                             @can('user_show')

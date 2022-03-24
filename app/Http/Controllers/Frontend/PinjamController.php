@@ -4,19 +4,25 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
+use App\Http\Controllers\Traits\WaBlastTrait;
 use App\Http\Requests\MassDestroyPinjamRequest;
 use App\Http\Requests\StorePinjamRequest;
 use App\Http\Requests\UpdatePinjamRequest;
 use App\Models\Pinjam;
+use App\Models\LogPinjam;
 use App\Models\Ruang;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
+use DB;
+use Carbon\Carbon;
+use Alert;
 
 class PinjamController extends Controller
 {
     use MediaUploadingTrait;
+    use WaBlastTrait;
 
     public function index()
     {
@@ -27,26 +33,70 @@ class PinjamController extends Controller
         return view('frontend.pinjams.index', compact('pinjams'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         abort_if(Gate::denies('pinjam_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $ruangs = Ruang::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $ruangs = Ruang::get()->pluck('nama_lantai', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        if ($request->ruang) {
+            session()->flashInput(['ruang_id' => $request->ruang]);
+        }
 
         return view('frontend.pinjams.create', compact('ruangs'));
     }
 
     public function store(StorePinjamRequest $request)
     {
-        $pinjam = Pinjam::create($request->all());
+        $times = [
+            Carbon::parse($request->input('time_start')),
+            Carbon::parse($request->input('time_end')),
+        ];
 
-        if ($request->input('surat_pengajuan', false)) {
-            $pinjam->addMedia(storage_path('tmp/uploads/' . basename($request->input('surat_pengajuan'))))->toMediaCollection('surat_pengajuan');
+        $countPinjam = Pinjam::where('ruang_id', $request->ruang_id)
+                ->where(function($query) use($times) {
+                    $query->whereBetween('time_start', $times)
+                        ->orWhereBetween('time_end', $times)
+                        ->orWhere(function ($query) use ($times) {
+                            $query->where('time_start', '<', $times[0])
+                                ->where('time_end', '>', $times[1]);
+                        });
+                })
+                ->count();
+        if ($countPinjam > 0) {
+            Alert::error('Error', 'Ruangan sudah dipinjam untuk waktu peminjaman tersebut!');
+            return redirect()->back();
         }
 
-        if ($media = $request->input('ck-media', false)) {
-            Media::whereIn('id', $media)->update(['model_id' => $pinjam->id]);
-        }
+        $ruang = Ruang::find($request->ruang_id);
+        $request->request->add(['status' => 'diajukan']);
+        $request->request->add(['status_text' => 'Diajukan oleh "' . auth()->user()->name .'" peminjaman ruang "'.$ruang->nama_lantai .'"']);
+        $request->request->add(['borrowed_by_id' => auth()->user()->id]);
+
+        $sukses = DB::transaction(function() use ($request) {
+            $pinjam = Pinjam::create($request->all());
+
+            if ($request->input('surat_pengajuan', false)) {
+                $pinjam->addMedia(storage_path('tmp/uploads/' . basename($request->input('surat_pengajuan'))))->toMediaCollection('surat_pengajuan');
+            }
+
+            if ($media = $request->input('ck-media', false)) {
+                Media::whereIn('id', $media)->update(['model_id' => $pinjam->id]);
+            }
+
+            $log = LogPinjam::create([
+                'peminjaman_id' => $pinjam->id,
+                'jenis' => 'diajukan',
+                'log' => 'Peminjaman ruang : '. $pinjam->ruang->nama_lantai. ' Diajukan oleh "'. $pinjam->borrowed_by->name.'" Untuk tanggal '. $pinjam->WaktuPeminjaman . ' Untuk penggunaan "' . $pinjam->penggunaan .'"',
+            ]);
+
+            $pesan_user = 'Peminjaman ruang : '. $pinjam->ruang->nama_lantai. ' Diajukan oleh "'. $pinjam->borrowed_by->name.'" Untuk tanggal '. $pinjam->WaktuPeminjaman . ' Untuk penggunaan "' . $pinjam->penggunaan .'" Sudah Diproses.';
+
+            return (['pesan_admin' => $log['log'], 'pesan_user' => $pesan_user, 'user' => $pinjam->no_hp]);
+        });
+
+        // $this->sendNotification('628156700796', $sukses['pesan_lppm']); // for Admin LPPM
+        // $this->sendNotification($sukses['user'], $sukses['pesan_user']); // for User
 
         return redirect()->route('frontend.pinjams.index');
     }

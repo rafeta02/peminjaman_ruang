@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.frontend')
 @section('content')
 <h3 class="page-title">{{ trans('global.systemCalendar') }}</h3>
 <div class="card">
@@ -28,7 +28,8 @@
             $('#calendar').fullCalendar({
                 // put your options and callbacks here
                 events: events,
-
+                defaultView: 'listWeek',
+                timeFormat: 'H(:mm)'
 
             })
         });
