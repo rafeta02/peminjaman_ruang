@@ -10,6 +10,14 @@
         <form method="POST" action="{{ route("admin.users.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
+                <label for="nip">{{ trans('cruds.user.fields.nip') }}</label>
+                <input class="form-control {{ $errors->has('nip') ? 'is-invalid' : '' }}" type="text" name="nip" id="nip" value="{{ old('nip', '') }}">
+                @if($errors->has('nip'))
+                    <span class="text-danger">{{ $errors->first('nip') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.user.fields.nip_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label class="required" for="name">{{ trans('cruds.user.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', '') }}" required>
                 @if($errors->has('name'))
