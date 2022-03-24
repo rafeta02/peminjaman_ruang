@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Aacotroneo\Saml2\Saml2Auth;
+use Illuminate\Support\Facades\URL;
 
 class LoginController extends Controller
 {
@@ -43,5 +45,11 @@ class LoginController extends Controller
         }
 
         return '/home';
+    }
+
+    public function loginSSO()
+    {
+        $saml2Auth = new Saml2Auth(Saml2Auth::loadOneLoginAuthFromIpdConfig('ssouns'));
+        return $saml2Auth->login(route('frontend.home'));
     }
 }

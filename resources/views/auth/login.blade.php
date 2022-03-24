@@ -63,8 +63,7 @@
             <hr>
             <div class="text-center mt-2 mb-3">
                 <h5 class="mb-4">Atau login dengan:</h5>
-                <a href="#">
-                    {{-- {{ route('auth.login.sso') }} --}}
+                <a href="{{ route('auth.login.sso') }}">
                     <img src="{{ asset('img/sso.jpg') }}" style="height:75px; width:auto">
                 </a>
             </div>

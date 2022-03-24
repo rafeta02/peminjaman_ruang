@@ -7,7 +7,7 @@ return $settings = array(
      * Separate routes will be automatically registered for each IDP specified with IDP name as prefix
      * Separate config file saml2/<idpName>_idp_settings.php should be added & configured accordingly
      */
-    'idpNames' => ['test'],
+    'idpNames' => ['ssouns'],
 
     /**
      * If 'useRoutes' is set to true, the package defines five new routes for reach entry in idpNames:
@@ -31,7 +31,7 @@ return $settings = array(
      * which middleware group to use for the saml routes
      * Laravel 5.2 will need a group which includes StartSession
      */
-    'routesMiddleware' => [],
+    'routesMiddleware' => ['saml'],
 
     /**
      * Indicates how the parameters will be
