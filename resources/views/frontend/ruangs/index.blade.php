@@ -3,6 +3,15 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
+            @can('ruang_create')
+                <div style="margin-bottom: 10px;" class="row">
+                    <div class="col-lg-12">
+                        <a class="btn btn-success" href="{{ route('frontend.ruangs.create') }}">
+                            {{ trans('global.add') }} {{ trans('cruds.ruang.title_singular') }}
+                        </a>
+                    </div>
+                </div>
+            @endcan
             <div class="card">
                 <div class="card-header">
                     {{ trans('cruds.ruang.title_singular') }} {{ trans('global.list') }}
@@ -14,12 +23,21 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        Ruang
+                                        {{ trans('cruds.ruang.fields.id') }}
+                                    </th>
+                                    <th>
+                                        {{ trans('cruds.ruang.fields.lantai') }}
+                                    </th>
+                                    <th>
+                                        {{ trans('cruds.ruang.fields.name') }}
                                     </th>
                                     <th>
                                         {{ trans('cruds.ruang.fields.kapasitas') }}
                                     </th>
-                                    <th width="10%">
+                                    <th>
+                                        {{ trans('cruds.ruang.fields.images') }}
+                                    </th>
+                                    <th>
                                         &nbsp;
                                     </th>
                                 </tr>
@@ -28,16 +46,47 @@
                                 @foreach($ruangs as $key => $ruang)
                                     <tr data-entry-id="{{ $ruang->id }}">
                                         <td>
-                                            {{ $ruang->nama_lantai ?? '' }}
+                                            {{ $ruang->id ?? '' }}
+                                        </td>
+                                        <td>
+                                            {{ $ruang->lantai->name ?? '' }}
+                                        </td>
+                                        <td>
+                                            {{ $ruang->name ?? '' }}
                                         </td>
                                         <td>
                                             {{ $ruang->kapasitas ?? '' }}
                                         </td>
                                         <td>
-                                            <a class="btn btn-sm btn-block btn-success btn-block" href="{{ route('frontend.pinjams.create', ['ruang' => $ruang->id]) }}">
-                                                Ajukan
-                                            </a>
+                                            @foreach($ruang->images as $key => $media)
+                                                <a href="{{ $media->getUrl() }}" target="_blank" style="display: inline-block">
+                                                    <img src="{{ $media->getUrl('thumb') }}">
+                                                </a>
+                                            @endforeach
                                         </td>
+                                        <td>
+                                            @can('ruang_show')
+                                                <a class="btn btn-xs btn-primary" href="{{ route('frontend.ruangs.show', $ruang->id) }}">
+                                                    {{ trans('global.view') }}
+                                                </a>
+                                            @endcan
+
+                                            @can('ruang_edit')
+                                                <a class="btn btn-xs btn-info" href="{{ route('frontend.ruangs.edit', $ruang->id) }}">
+                                                    {{ trans('global.edit') }}
+                                                </a>
+                                            @endcan
+
+                                            @can('ruang_delete')
+                                                <form action="{{ route('frontend.ruangs.destroy', $ruang->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                    <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                                </form>
+                                            @endcan
+
+                                        </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -95,9 +144,8 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-
+  
 })
 
 </script>
 @endsection
-
