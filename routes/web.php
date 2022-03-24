@@ -1,6 +1,7 @@
 <?php
 
-Route::view('/', 'welcome');
+Route::view('/', 'landing/index')->name('landing');
+Route::get('/calender', 'HomeController@calender')->name('calender');
 Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'admin']], function () {
@@ -90,7 +91,7 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     // Ruang
     Route::delete('ruangs/destroy', 'RuangController@massDestroy')->name('ruangs.massDestroy');
     Route::post('ruangs/media', 'RuangController@storeMedia')->name('ruangs.storeMedia');
-    Route::post('ruangs/ckmedia', 'RuangController@storeCKEditorImages')->name('ruangs.storeCKEditorImages');
+    Route::post('ruangs/media', 'RuangController@storeMedia')->name('ruangs.storeMedia');
     Route::resource('ruangs', 'RuangController');
 
     // Pinjam

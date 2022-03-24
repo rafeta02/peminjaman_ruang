@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
 use DB;
+use Carbon\Carbon;
+use Alert;
 
 class PinjamController extends Controller
 {
@@ -46,6 +48,26 @@ class PinjamController extends Controller
 
     public function store(StorePinjamRequest $request)
     {
+        $times = [
+            Carbon::parse($request->input('time_start')),
+            Carbon::parse($request->input('time_end')),
+        ];
+
+        $countPinjam = Pinjam::where('ruang_id', $request->ruang_id)
+                ->where(function($query) use($times) {
+                    $query->whereBetween('time_start', $times)
+                        ->orWhereBetween('time_end', $times)
+                        ->orWhere(function ($query) use ($times) {
+                            $query->where('time_start', '<', $times[0])
+                                ->where('time_end', '>', $times[1]);
+                        });
+                })
+                ->count();
+        if ($countPinjam > 0) {
+            Alert::error('Error', 'Ruangan sudah dipinjam untuk waktu peminjaman tersebut!');
+            return redirect()->back();
+        }
+
         $ruang = Ruang::find($request->ruang_id);
         $request->request->add(['status' => 'diajukan']);
         $request->request->add(['status_text' => 'Diajukan oleh "' . auth()->user()->name .'" peminjaman ruang "'.$ruang->nama_lantai .'"']);

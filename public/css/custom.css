@@ -137,3 +137,16 @@ div.dt-button-collection {
     transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
 }
+
+/* .img-fit {
+  object-fit: cover;
+  width: 100%;
+  max-height: calc((100vw - 60px) * 3/7);
+} */
+
+.carousel .carousel-item img {
+    object-fit: cover;
+    object-position: center;
+    height: 50vh;
+    overflow: hidden;
+  }

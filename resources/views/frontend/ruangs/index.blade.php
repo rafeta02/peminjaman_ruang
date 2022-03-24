@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="card">
+            {{-- <div class="card mb-3">
                 <div class="card-header">
                     {{ trans('cruds.ruang.title_singular') }} {{ trans('global.list') }}
                 </div>
@@ -44,8 +44,49 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
+            <div class="row">
+                @foreach($ruangs as $key => $ruang)
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card mb-3">
+                        <div id="carouselExample{{ $key }}" class="carousel slide carousel-fade" data-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    @if(count($ruang->images) > 0)
+                                        @foreach ($ruang->images as $media)
+                                            <img class="d-block w-100" src="{{ $media->getUrl() }}">
+                                        @endforeach
+                                    @else
+                                        <img class="d-block w-100" src="{{ asset('img/empty-room.jpg') }}">
+                                    @endif
+                                </div>
+                            </div>
+                            <a class="carousel-control-prev" href="#carouselExample{{ $key }}" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExample{{ $key }}" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $ruang->nama_lantai ?? '' }}</h5>
+                            {{-- <p class="card-text">Description</p> --}}
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><b>Kapasitas : {{ $ruang->kapasitas ?? '' }} Orang</b></li>
+                            <li class="list-group-item">
+                                <a class="btn btn-md btn-block btn-primary" href="{{ route('frontend.pinjams.create', ['ruang' => $ruang->id]) }}">
+                                    Ajukan
+                                </a>
+                            </li>
+                          </ul>
+                    </div>
+                </div>
+                @endforeach
+            </div>
         </div>
     </div>
 </div>
