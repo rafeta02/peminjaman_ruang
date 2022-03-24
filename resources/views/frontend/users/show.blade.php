@@ -60,62 +60,6 @@
                                         @endforeach
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.user.fields.nip') }}
-                                    </th>
-                                    <td>
-                                        {{ $user->nip }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.user.fields.no_identitas') }}
-                                    </th>
-                                    <td>
-                                        {{ $user->no_identitas }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.user.fields.nama') }}
-                                    </th>
-                                    <td>
-                                        {{ $user->nama }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.user.fields.username') }}
-                                    </th>
-                                    <td>
-                                        {{ $user->username }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.user.fields.alamat') }}
-                                    </th>
-                                    <td>
-                                        {{ $user->alamat }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.user.fields.no_hp') }}
-                                    </th>
-                                    <td>
-                                        {{ $user->no_hp }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        {{ trans('cruds.user.fields.foto_url') }}
-                                    </th>
-                                    <td>
-                                        {{ $user->foto_url }}
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                         <div class="form-group">

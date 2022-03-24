@@ -6,6 +6,7 @@ use \DateTimeInterface;
 use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
@@ -20,6 +21,7 @@ class Ruang extends Model implements HasMedia
 
     protected $appends = [
         'images',
+        'nama_lantai'
     ];
 
     protected $dates = [
@@ -64,5 +66,10 @@ class Ruang extends Model implements HasMedia
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
+    }
+
+    public function getNamaLantaiAttribute()
+    {
+        return Str::title($this->attributes['name']).' - '.Str::title($this->lantai->name);
     }
 }
