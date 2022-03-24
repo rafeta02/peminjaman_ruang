@@ -29,7 +29,7 @@
                         </div>
                         <div class="form-group">
                             <label class="required" for="time_start">{{ trans('cruds.pinjam.fields.time_start') }}</label>
-                            <input class="form-control datetime-picker" type="text" name="time_start" id="time_start" value="{{ old('time_start') }}" required>
+                            <input class="form-control datetime" type="text" name="time_start" id="time_start" value="{{ old('time_start') }}" required>
                             @if($errors->has('time_start'))
                                 <div class="invalid-feedback">
                                     {{ $errors->first('time_start') }}
@@ -39,7 +39,7 @@
                         </div>
                         <div class="form-group">
                             <label class="required" for="time_end">{{ trans('cruds.pinjam.fields.time_end') }}</label>
-                            <input class="form-control datetime-picker" type="text" name="time_end" id="time_end" value="{{ old('time_end') }}" required>
+                            <input class="form-control datetime" type="text" name="time_end" id="time_end" value="{{ old('time_end') }}" required>
                             @if($errors->has('time_end'))
                                 <div class="invalid-feedback">
                                     {{ $errors->first('time_end') }}
@@ -109,19 +109,6 @@
 
 @section('scripts')
 <script>
-
-    $(function () {
-        $('#time_start').datetimepicker().on('dp.change', function (e) {
-            $('#time_end').data('DateTimePicker').minDate(e.date);
-            $(this).data("DateTimePicker").hide();
-        });
-
-        $('#time_end').datetimepicker().on('dp.change', function (e) {
-            $('#time_start').data('DateTimePicker').maxDate(e.date);
-            $(this).data("DateTimePicker").hide();
-        });
-    });
-
     Dropzone.options.suratPengajuanDropzone = {
     url: '{{ route('frontend.pinjams.storeMedia') }}',
     maxFilesize: 2, // MB

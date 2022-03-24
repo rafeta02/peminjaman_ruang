@@ -55,10 +55,6 @@
                                                 {{ trans(sprintf('cruds.%s.fields.%s', $settings3['translation_key'] ?? 'pleaseUpdateWidget', $key)) }}
                                             </th>
                                         @endforeach
-                                        <th>
-                                            Status
-                                        </th>
-                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -77,18 +73,6 @@
                                                     @endif
                                                 </td>
                                             @endforeach
-                                            <td>
-                                                @if($entry->status == 'ditolak')
-                                                    <span class="badge badge-danger">Ditolak<br>("{{ $entry->status_text }}"")</span>
-                                                @else
-                                                    <span class="badge badge-{{ App\Models\Pinjam::STATUS_BACKGROUND[$entry->status] ?? '' }}">{{ App\Models\Pinjam::STATUS_SELECT[$entry->status] ?? '' }}</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-sm btn-block btn-primary" href="{{ route('admin.process.index') }}">
-                                                    {{ trans('global.view') }}
-                                                </a>
-                                            </td>
                                         </tr>
                                         @empty
                                         <tr>
