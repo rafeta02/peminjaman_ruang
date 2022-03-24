@@ -20,9 +20,8 @@ class CreateUsersTable extends Migration
             $table->string('no_identitas')->nullable();
             $table->string('nama')->nullable();
             $table->string('username')->nullable();
-            $table->string('alamat')->nullable();
+            $table->longText('alamat')->nullable();
             $table->string('no_hp')->nullable();
-            $table->string('foto_url')->nullable();
             $table->string('jwt_token')->nullable();
             $table->timestamps();
             $table->softDeletes();
