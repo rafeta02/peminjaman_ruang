@@ -38,6 +38,32 @@ $(document).ready(function () {
     }
   })
 
+  $('.date-picker').datetimepicker({
+    format: 'YYYY-MM-DD',
+    useCurrent: false,
+    locale: 'en',
+    icons: {
+      up: 'fas fa-chevron-up',
+      down: 'fas fa-chevron-down',
+      previous: 'fas fa-chevron-left',
+      next: 'fas fa-chevron-right'
+    }
+  })
+
+  $('.datetime-picker').datetimepicker({
+    format: 'YYYY-MM-DD HH:mm',
+    useCurrent: false,
+    locale: 'en',
+    sideBySide: true,
+    stepping: 5,
+    icons: {
+      up: 'fas fa-chevron-up',
+      down: 'fas fa-chevron-down',
+      previous: 'fas fa-chevron-left',
+      next: 'fas fa-chevron-right'
+    }
+  })
+
   $('.select-all').click(function () {
     let $select2 = $(this).parent().siblings('.select2')
     $select2.find('option').prop('selected', 'selected')

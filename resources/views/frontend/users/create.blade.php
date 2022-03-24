@@ -62,56 +62,6 @@
                             <span class="help-block">{{ trans('cruds.user.fields.roles_helper') }}</span>
                         </div>
                         <div class="form-group">
-                            <label for="nip">{{ trans('cruds.user.fields.nip') }}</label>
-                            <input class="form-control" type="text" name="nip" id="nip" value="{{ old('nip', '') }}">
-                            @if($errors->has('nip'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('nip') }}
-                                </div>
-                            @endif
-                            <span class="help-block">{{ trans('cruds.user.fields.nip_helper') }}</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="no_identitas">{{ trans('cruds.user.fields.no_identitas') }}</label>
-                            <input class="form-control" type="text" name="no_identitas" id="no_identitas" value="{{ old('no_identitas', '') }}">
-                            @if($errors->has('no_identitas'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('no_identitas') }}
-                                </div>
-                            @endif
-                            <span class="help-block">{{ trans('cruds.user.fields.no_identitas_helper') }}</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="nama">{{ trans('cruds.user.fields.nama') }}</label>
-                            <input class="form-control" type="text" name="nama" id="nama" value="{{ old('nama', '') }}">
-                            @if($errors->has('nama'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('nama') }}
-                                </div>
-                            @endif
-                            <span class="help-block">{{ trans('cruds.user.fields.nama_helper') }}</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="alamat">{{ trans('cruds.user.fields.alamat') }}</label>
-                            <input class="form-control" type="text" name="alamat" id="alamat" value="{{ old('alamat', '') }}">
-                            @if($errors->has('alamat'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('alamat') }}
-                                </div>
-                            @endif
-                            <span class="help-block">{{ trans('cruds.user.fields.alamat_helper') }}</span>
-                        </div>
-                        <div class="form-group">
-                            <label for="no_hp">{{ trans('cruds.user.fields.no_hp') }}</label>
-                            <input class="form-control" type="text" name="no_hp" id="no_hp" value="{{ old('no_hp', '') }}">
-                            @if($errors->has('no_hp'))
-                                <div class="invalid-feedback">
-                                    {{ $errors->first('no_hp') }}
-                                </div>
-                            @endif
-                            <span class="help-block">{{ trans('cruds.user.fields.no_hp_helper') }}</span>
-                        </div>
-                        <div class="form-group">
                             <button class="btn btn-danger" type="submit">
                                 {{ trans('global.save') }}
                             </button>

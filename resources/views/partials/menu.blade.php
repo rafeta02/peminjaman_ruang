@@ -141,6 +141,18 @@
 
                             </i>
                             <p>
+                                {{ trans('cruds.pinjam.title') }} (Administrator)
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+                @can('process_access')
+                    <li class="nav-item">
+                        <a href="{{ route("admin.process.index") }}" class="nav-link {{ request()->is("admin/process") || request()->is("admin/process/*") ? "active" : "" }}">
+                            <i class="fa-fw nav-icon fas fa-calendar">
+
+                            </i>
+                            <p>
                                 {{ trans('cruds.pinjam.title') }}
                             </p>
                         </a>
