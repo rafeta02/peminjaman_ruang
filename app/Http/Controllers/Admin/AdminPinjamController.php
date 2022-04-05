@@ -31,7 +31,7 @@ class AdminPinjamController extends Controller
      */
     public function index(Request $request)
     {
-        abort_if(Gate::denies('pinjam_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('process_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = Pinjam::with(['ruang', 'borrowed_by', 'processed_by', 'created_by'])->select(sprintf('%s.*', (new Pinjam())->table));
@@ -136,7 +136,7 @@ class AdminPinjamController extends Controller
      */
     public function show($id)
     {
-        abort_if(Gate::denies('pinjam_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('process_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $pinjam = Pinjam::with('ruang', 'borrowed_by', 'processed_by', 'created_by')->find($id);
 

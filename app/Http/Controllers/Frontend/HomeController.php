@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Http\Controllers\Controller;
 use App\Models\Pinjam;
+use Gate;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class HomeController
 {
     public function index()
     {
+        abort_if(Gate::denies('front_dashboard'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $events = [];
         $pinjams = Pinjam::with(['ruang', 'borrowed_by', 'processed_by', 'created_by'])->get();
 

@@ -55,18 +55,18 @@
                             <li class="nav-item">
                                 <a href="{{ route('frontend.ruangs.index') }}" class="nav-link">{{ trans('cruds.ruang.title') }}</a>
                             </li>
-                            {{-- @can('front_pinjam') --}}
+                            @can('front_pinjam')
                             <li class="nav-item">
                                 <a href="{{ route('frontend.pinjams.index') }}" class="nav-link">{{ trans('cruds.pinjam.title') }}</a>
                             </li>
-                            {{-- @endcan --}}
-                            {{-- @can('admin_page') --}}
+                            @endcan
+                            @can('admin_page')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.home') }}">
                                     Administrator
                                 </a>
                             </li>
-                            {{-- @endcan --}}
+                            @endcan
                         @endguest
                     </ul>
 
@@ -92,12 +92,12 @@
 
                                     <a class="dropdown-item" href="{{ route('frontend.profile.index') }}">{{ __('My profile') }}</a>
 
-                                    @can('ruang_access')
+                                    @can('front_ruangan')
                                         <a class="dropdown-item" href="{{ route('frontend.ruangs.index') }}">
                                             {{ trans('cruds.ruang.title') }}
                                         </a>
                                     @endcan
-                                    @can('pinjam_access')
+                                    @can('front_pinjam')
                                         <a class="dropdown-item" href="{{ route('frontend.pinjams.index') }}">
                                             {{ trans('cruds.pinjam.title') }}
                                         </a>

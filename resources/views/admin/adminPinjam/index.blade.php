@@ -165,7 +165,6 @@
                         },
                         success: function (response) {
                             $(".overlay-loading").css("display", "none");
-                            $('#rejectionForm').trigger("reset");
                             if (response.status == 'success') {
                                 table.ajax.reload();
                                 swal("Success", response.message, "success");

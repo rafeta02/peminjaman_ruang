@@ -201,9 +201,6 @@ class PermissionsTableSeeder extends Seeder
                 'title' => 'process_accept',
             ],
             [
-                'title' => 'process_selesai',
-            ],
-            [
                 'title' => 'admin_page',
             ],
             [

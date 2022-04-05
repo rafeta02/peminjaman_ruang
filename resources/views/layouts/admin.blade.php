@@ -32,12 +32,16 @@
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
                 </li>
+                @can('front_dashboard')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('frontend.home') }}">Dashboard Users</a>
                 </li>
+                @endcan
+                @can('front_pinjam')
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('frontend.pinjams.create') }}">Tambah Peminjaman</a>
                 </li>
+                @endcan
             </ul>
 
             <!-- Right navbar links -->

@@ -20,7 +20,7 @@ class RuangController extends Controller
 
     public function index()
     {
-        abort_if(Gate::denies('ruang_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_ruangan'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $ruangs = Ruang::with(['lantai', 'media'])->get();
 
@@ -29,7 +29,7 @@ class RuangController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('ruang_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_ruangan'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $lantais = Lantai::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -53,7 +53,7 @@ class RuangController extends Controller
 
     public function edit(Ruang $ruang)
     {
-        abort_if(Gate::denies('ruang_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_ruangan'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $lantais = Lantai::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -85,7 +85,7 @@ class RuangController extends Controller
 
     public function show(Ruang $ruang)
     {
-        abort_if(Gate::denies('ruang_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_ruangan'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $ruang->load('lantai');
 
@@ -94,7 +94,7 @@ class RuangController extends Controller
 
     public function destroy(Ruang $ruang)
     {
-        abort_if(Gate::denies('ruang_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_ruangan'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $ruang->delete();
 
@@ -110,7 +110,7 @@ class RuangController extends Controller
 
     public function storeCKEditorImages(Request $request)
     {
-        abort_if(Gate::denies('ruang_create') && Gate::denies('ruang_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_ruangan') && Gate::denies('front_ruangan'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $model         = new Ruang();
         $model->id     = $request->input('crud_id', 0);

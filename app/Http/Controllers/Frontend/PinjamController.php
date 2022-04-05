@@ -26,7 +26,7 @@ class PinjamController extends Controller
 
     public function index()
     {
-        abort_if(Gate::denies('pinjam_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_pinjam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $pinjams = Pinjam::with(['ruang', 'borrowed_by', 'processed_by', 'created_by', 'media'])->get();
 
@@ -35,7 +35,7 @@ class PinjamController extends Controller
 
     public function create(Request $request)
     {
-        abort_if(Gate::denies('pinjam_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_pinjam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $ruangs = Ruang::get()->pluck('nama_lantai', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -103,7 +103,7 @@ class PinjamController extends Controller
 
     public function edit(Pinjam $pinjam)
     {
-        abort_if(Gate::denies('pinjam_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_pinjam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $ruangs = Ruang::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -132,7 +132,7 @@ class PinjamController extends Controller
 
     public function show(Pinjam $pinjam)
     {
-        abort_if(Gate::denies('pinjam_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_pinjam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $pinjam->load('ruang', 'borrowed_by', 'processed_by', 'created_by');
 
@@ -141,7 +141,7 @@ class PinjamController extends Controller
 
     public function destroy(Pinjam $pinjam)
     {
-        abort_if(Gate::denies('pinjam_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_pinjam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $pinjam->delete();
 
@@ -157,7 +157,7 @@ class PinjamController extends Controller
 
     public function storeCKEditorImages(Request $request)
     {
-        abort_if(Gate::denies('pinjam_create') && Gate::denies('pinjam_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('front_pinjam') && Gate::denies('pinjam_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $model         = new Pinjam();
         $model->id     = $request->input('crud_id', 0);
