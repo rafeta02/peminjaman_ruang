@@ -5,6 +5,10 @@ Route::get('/calender', 'HomeController@calender')->name('calender');
 Auth::routes(['register' => false]);
 Route::get('/login/sso', 'Auth\LoginController@loginSSO')->name('auth.login.sso');
 
+Route::get('/artisan-command', function () {
+    Artisan::call('storage:link');
+});
+
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', 'admin']], function () {
     Route::get('/', 'HomeController@index')->name('home');
     // Permissions
