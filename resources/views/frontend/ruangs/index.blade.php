@@ -77,6 +77,7 @@
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item"><b>Kapasitas : {{ $ruang->kapasitas ?? '' }} Orang</b></li>
+                            <li class="list-group-item"><b>Fasilitas : {{ $ruang->fasilitas ?? '-' }}</b></li>
                             <li class="list-group-item">
                                 <a class="btn btn-md btn-block btn-primary" href="{{ route('frontend.pinjams.create', ['ruang' => $ruang->id]) }}">
                                     Ajukan

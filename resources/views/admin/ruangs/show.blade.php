@@ -17,14 +17,6 @@
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.ruang.fields.id') }}
-                        </th>
-                        <td>
-                            {{ $ruang->id }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.ruang.fields.lantai') }}
                         </th>
                         <td>
@@ -45,6 +37,14 @@
                         </th>
                         <td>
                             {{ $ruang->kapasitas }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.ruang.fields.fasilitas') }}
+                        </th>
+                        <td>
+                            {{ $ruang->fasilitas }}
                         </td>
                     </tr>
                     <tr>

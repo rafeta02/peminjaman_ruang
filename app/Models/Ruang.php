@@ -35,6 +35,7 @@ class Ruang extends Model implements HasMedia
         'name',
         'kapasitas',
         'slug',
+        'fasilitas',
         'created_at',
         'updated_at',
         'deleted_at',

@@ -22,13 +22,13 @@
 
                     </th>
                     <th>
-                        {{ trans('cruds.ruang.fields.id') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.ruang.fields.lantai') }}
                     </th>
                     <th>
                         {{ trans('cruds.ruang.fields.name') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.ruang.fields.kapasitas') }}
                     </th>
                     <th>
                         {{ trans('cruds.ruang.fields.kapasitas') }}
@@ -108,7 +108,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 });
 
 </script>

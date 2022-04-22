@@ -58,6 +58,9 @@ class RuangController extends Controller
             $table->editColumn('kapasitas', function ($row) {
                 return $row->kapasitas ? $row->kapasitas : '';
             });
+            $table->editColumn('fasilitas', function ($row) {
+                return $row->fasilitas ? $row->fasilitas : '';
+            });
             $table->editColumn('images', function ($row) {
                 if (!$row->images) {
                     return '';

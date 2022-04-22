@@ -38,6 +38,14 @@
                 <span class="help-block">{{ trans('cruds.ruang.fields.kapasitas_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="fasilitas">{{ trans('cruds.ruang.fields.fasilitas') }}</label>
+                <textarea class="form-control {{ $errors->has('fasilitas') ? 'is-invalid' : '' }}" name="fasilitas" id="fasilitas">{{ old('fasilitas') }}</textarea>
+                @if($errors->has('fasilitas'))
+                    <span class="text-danger">{{ $errors->first('fasilitas') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.ruang.fields.fasilitas_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="images">{{ trans('cruds.ruang.fields.images') }}</label>
                 <div class="needsclick dropzone {{ $errors->has('images') ? 'is-invalid' : '' }}" id="images-dropzone">
                 </div>

@@ -171,6 +171,8 @@ return [
             'slug_helper'       => ' ',
             'images'            => 'Images',
             'images_helper'     => ' ',
+            'fasilitas'         => 'Fasilitas',
+            'fasilitas_helper'  => ' ',
         ],
     ],
     'pinjam' => [
