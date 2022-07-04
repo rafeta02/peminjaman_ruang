@@ -15,7 +15,7 @@ class HomeController
         abort_if(Gate::denies('front_dashboard'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $events = [];
-        $pinjams = Pinjam::with(['ruang', 'borrowed_by', 'processed_by', 'created_by'])->get();
+        $pinjams = Pinjam::with(['ruang', 'borrowed_by', 'processed_by', 'created_by'])->where('status', 'disetujui')->get();
 
         foreach($pinjams as $pinjam) {
             if (!$pinjam->time_start) {

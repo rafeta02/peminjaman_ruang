@@ -6,11 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\MediaUploadingTrait;
 use App\Http\Controllers\Traits\WaBlastTrait;
 use App\Http\Requests\MassDestroyPinjamRequest;
-use App\Http\Requests\StorePinjamRequest;
-use App\Http\Requests\UpdatePinjamRequest;
+use App\Http\Requests\StoreProcessRequest;
+use App\Http\Requests\UpdateProcessRequest;
 use App\Models\Pinjam;
 use App\Models\Ruang;
 use App\Models\LogPinjam;
+use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use DB;
 use Carbon\Carbon;
+use Alert;
 
 class AdminPinjamController extends Controller
 {
@@ -114,7 +116,14 @@ class AdminPinjamController extends Controller
      */
     public function create()
     {
-        //
+        abort_if(Gate::denies('process_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $ruangs = Ruang::get()->pluck('nama_lantai', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $users = User::whereHas('roles', function($q){
+            $q->where('id', 3);
+        })->get()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.adminPinjam.create', compact('ruangs', 'users'));
     }
 
     /**
@@ -123,9 +132,56 @@ class AdminPinjamController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePinjamRequest $request)
+    public function store(StoreProcessRequest $request)
     {
-        //
+        $times = [
+            Carbon::parse($request->input('time_start')),
+            Carbon::parse($request->input('time_end')),
+        ];
+
+        $countPinjam = Pinjam::where('ruang_id', $request->ruang_id)
+                ->where(function($query) use($times) {
+                    $query->whereBetween('time_start', $times)
+                        ->orWhereBetween('time_end', $times)
+                        ->orWhere(function ($query) use ($times) {
+                            $query->where('time_start', '<', $times[0])
+                                ->where('time_end', '>', $times[1]);
+                        });
+                })
+                ->count();
+        if ($countPinjam > 0) {
+            Alert::error('Error', 'Ruangan sudah dipinjam untuk waktu peminjaman tersebut!');
+            return redirect()->back();
+        }
+
+        $pemohon = User::find($request->borrowed_by_id);
+        $ruang = Ruang::find($request->ruang_id);
+        $request->request->add(['status' => 'disetujui']);
+        $request->request->add(['status_text' => 'Diajukan oleh "' . $pemohon->name .'" dan Disetujui oleh "' . auth()->user()->name .'" untuk peminjaman ruang "'.$ruang->nama_lantai .'"']);
+
+        $sukses = DB::transaction(function() use ($request) {
+            $pinjam = Pinjam::create($request->all());
+
+            if ($request->input('surat_pengajuan', false)) {
+                $pinjam->addMedia(storage_path('tmp/uploads/' . basename($request->input('surat_pengajuan'))))->toMediaCollection('surat_pengajuan');
+            }
+
+            if ($media = $request->input('ck-media', false)) {
+                Media::whereIn('id', $media)->update(['model_id' => $pinjam->id]);
+            }
+
+            $log = LogPinjam::create([
+                'peminjaman_id' => $pinjam->id,
+                'jenis' => 'disetujui',
+                'log' => 'Peminjaman ruang : '. $pinjam->ruang->nama_lantai. ' Diajukan oleh "'. $pinjam->borrowed_by->name.'" Untuk tanggal '. $pinjam->WaktuPeminjaman . ' Untuk penggunaan "' . $pinjam->penggunaan .'" Telah Disetujui oleh "'. auth()->user()->name. '"',
+            ]);
+
+            $pesan_user = 'Peminjaman ruang : '. $pinjam->ruang->nama_lantai. ' Diajukan oleh "'. $pinjam->borrowed_by->name.'" Untuk tanggal '. $pinjam->WaktuPeminjaman . ' Untuk penggunaan "' . $pinjam->penggunaan .'" Sudah Diproses dan Disetujui.';
+
+            return (['pesan_admin' => $log['log'], 'pesan_user' => $pesan_user, 'user' => $pinjam->no_hp]);
+        });
+
+        return redirect()->route('admin.process.index');
     }
 
     /**
@@ -151,7 +207,13 @@ class AdminPinjamController extends Controller
      */
     public function edit(Pinjam $pinjam)
     {
-        //
+        abort_if(Gate::denies('process_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $ruangs = Ruang::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $pinjam->load('ruang', 'borrowed_by', 'processed_by', 'created_by');
+
+        return view('admin.adminPinjam.edit', compact('pinjam', 'ruangs'));
     }
 
     /**
@@ -161,9 +223,22 @@ class AdminPinjamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePinjamRequest $request, Pinjam $pinjam)
+    public function update(UpdateProcessRequest $request, Pinjam $pinjam)
     {
-        //
+        $pinjam->update($request->all());
+
+        if ($request->input('surat_pengajuan', false)) {
+            if (!$pinjam->surat_pengajuan || $request->input('surat_pengajuan') !== $pinjam->surat_pengajuan->file_name) {
+                if ($pinjam->surat_pengajuan) {
+                    $pinjam->surat_pengajuan->delete();
+                }
+                $pinjam->addMedia(storage_path('tmp/uploads/' . basename($request->input('surat_pengajuan'))))->toMediaCollection('surat_pengajuan');
+            }
+        } elseif ($pinjam->surat_pengajuan) {
+            $pinjam->surat_pengajuan->delete();
+        }
+
+        return redirect()->route('admin.process.index');
     }
 
     /**
@@ -174,7 +249,11 @@ class AdminPinjamController extends Controller
      */
     public function destroy(Pinjam $pinjam)
     {
-        //
+        abort_if(Gate::denies('process_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $pinjam->delete();
+
+        return back();
     }
 
     public function acceptPengajuan(Request $request)

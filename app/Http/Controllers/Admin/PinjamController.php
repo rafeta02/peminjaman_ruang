@@ -76,7 +76,7 @@ class PinjamController extends Controller
             });
 
             $table->editColumn('surat_pengajuan', function ($row) {
-                return $row->surat_pengajuan ? '<a href="' . $row->surat_pengajuan->getUrl() . '" target="_blank">' . trans('global.downloadFile') . '</a>' : '';
+                return $row->surat_pengajuan ? '<a href="' . $row->surat_pengajuan->getFullUrl() . '" target="_blank">' . trans('global.downloadFile') . '</a>' : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'ruang', 'borrowed_by', 'processed_by', 'surat_pengajuan']);
@@ -174,6 +174,6 @@ class PinjamController extends Controller
         $model->exists = true;
         $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
-        return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
+        return response()->json(['id' => $media->id, 'url' => $media->getFullUrl()], Response::HTTP_CREATED);
     }
 }

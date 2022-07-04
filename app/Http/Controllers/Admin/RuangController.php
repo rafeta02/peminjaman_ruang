@@ -67,7 +67,7 @@ class RuangController extends Controller
                 }
                 $links = [];
                 foreach ($row->images as $media) {
-                    $links[] = '<a href="' . $media->getUrl() . '" target="_blank"><img src="' . $media->getUrl('thumb') . '" width="50px" height="50px"></a>';
+                    $links[] = '<a href="' . $media->getFullUrl() . '" target="_blank"><img src="' . $media->getFullUrl('thumb') . '" width="50px" height="50px"></a>';
                 }
 
                 return implode(' ', $links);
@@ -171,6 +171,6 @@ class RuangController extends Controller
         $model->exists = true;
         $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
-        return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
+        return response()->json(['id' => $media->id, 'url' => $media->getFullUrl()], Response::HTTP_CREATED);
     }
 }

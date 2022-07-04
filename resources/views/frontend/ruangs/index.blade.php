@@ -52,15 +52,17 @@
                     <div class="card mb-3">
                         <div id="carouselExample{{ $key }}" class="carousel slide carousel-fade" data-ride="carousel">
                             <div class="carousel-inner">
+                                @if(count($ruang->images) > 0)
+                                    @foreach ($ruang->images as $media)
+                                        <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                                            <img class="d-block w-100" src="{{ $media->getFullUrl() }}">
+                                        </div>
+                                    @endforeach
+                                @else
                                 <div class="carousel-item active">
-                                    @if(count($ruang->images) > 0)
-                                        @foreach ($ruang->images as $media)
-                                            <img class="d-block w-100" src="{{ $media->getUrl() }}">
-                                        @endforeach
-                                    @else
-                                        <img class="d-block w-100" src="{{ asset('img/empty-room.jpg') }}">
-                                    @endif
+                                    <img class="d-block w-100" src="{{ asset('img/empty-room.jpg') }}">
                                 </div>
+                                @endif
                             </div>
                             <a class="carousel-control-prev" href="#carouselExample{{ $key }}" role="button" data-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>

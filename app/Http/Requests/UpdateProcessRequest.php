@@ -7,11 +7,11 @@ use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
 
-class StorePinjamRequest extends FormRequest
+class UpdateProcessRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('pinjam_create');
+        return Gate::allows('process_access');
     }
 
     public function rules()
@@ -31,13 +31,13 @@ class StorePinjamRequest extends FormRequest
             ],
             'no_hp' => [
                 'string',
-                'required',
+                'required'
             ],
             'penggunaan' => [
                 'required',
             ],
             'borrowed_by_id' => [
-                'nullable',
+                'required',
             ],
         ];
     }

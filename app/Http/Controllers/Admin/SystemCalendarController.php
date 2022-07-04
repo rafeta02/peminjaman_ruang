@@ -22,7 +22,7 @@ class SystemCalendarController extends Controller
     public function index()
     {
         $events = [];
-        $pinjams = Pinjam::with(['ruang', 'borrowed_by', 'processed_by', 'created_by'])->get();
+        $pinjams = Pinjam::with(['ruang', 'borrowed_by', 'processed_by', 'created_by'])->where('status', 'disetujui')->get();
 
         foreach($pinjams as $pinjam) {
             if (!$pinjam->time_start) {

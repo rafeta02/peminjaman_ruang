@@ -7,8 +7,20 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route("admin.pinjams.store") }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route("admin.process.store") }}" enctype="multipart/form-data">
             @csrf
+            <div class="form-group">
+                <label class="required" for="borrowed_by_id">{{ trans('cruds.pinjam.fields.borrowed_by') }}</label>
+                <select class="form-control select2 {{ $errors->has('borrowed_by') ? 'is-invalid' : '' }}" name="borrowed_by_id" id="borrowed_by_id" required>
+                    @foreach($users as $id => $entry)
+                        <option value="{{ $id }}" {{ old('borrowed_by_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('borrowed_by'))
+                    <span class="text-danger">{{ $errors->first('borrowed_by') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.pinjam.fields.borrowed_by_helper') }}</span>
+            </div>
             <div class="form-group">
                 <label class="required" for="ruang_id">{{ trans('cruds.pinjam.fields.ruang') }}</label>
                 <select class="form-control select2 {{ $errors->has('ruang') ? 'is-invalid' : '' }}" name="ruang_id" id="ruang_id" required>
@@ -23,19 +35,33 @@
             </div>
             <div class="form-group">
                 <label class="required" for="time_start">{{ trans('cruds.pinjam.fields.time_start') }}</label>
-                <input class="form-control datetime {{ $errors->has('time_start') ? 'is-invalid' : '' }}" type="text" name="time_start" id="time_start" value="{{ old('time_start') }}" required>
+                <input class="form-control datetime-picker" type="text" name="time_start" id="time_start" value="{{ old('time_start') }}" required>
                 @if($errors->has('time_start'))
-                    <span class="text-danger">{{ $errors->first('time_start') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('time_start') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.pinjam.fields.time_start_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="time_end">{{ trans('cruds.pinjam.fields.time_end') }}</label>
-                <input class="form-control datetime {{ $errors->has('time_end') ? 'is-invalid' : '' }}" type="text" name="time_end" id="time_end" value="{{ old('time_end') }}" required>
+                <input class="form-control datetime-picker" type="text" name="time_end" id="time_end" value="{{ old('time_end') }}" required>
                 @if($errors->has('time_end'))
-                    <span class="text-danger">{{ $errors->first('time_end') }}</span>
+                    <div class="invalid-feedback">
+                        {{ $errors->first('time_end') }}
+                    </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.pinjam.fields.time_end_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required" for="no_hp">{{ trans('cruds.pinjam.fields.no_hp') }}</label>
+                <input class="form-control" type="text" name="no_hp" id="no_hp" value="{{ old('no_hp', '') }}" required>
+                @if($errors->has('no_hp'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('no_hp') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.pinjam.fields.no_hp_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="penggunaan">{{ trans('cruds.pinjam.fields.penggunaan') }}</label>
@@ -82,6 +108,19 @@
 
 @section('scripts')
 <script>
+    $(function () {
+        $('#time_start').datetimepicker().on('dp.change', function (e) {
+            $('#time_end').data('DateTimePicker').minDate(e.date);
+            $(this).data("DateTimePicker").hide();
+        });
+
+        $('#time_end').datetimepicker().on('dp.change', function (e) {
+            $('#time_start').data('DateTimePicker').maxDate(e.date);
+            $(this).data("DateTimePicker").hide();
+        });
+    });
+
+
     Dropzone.options.suratPengajuanDropzone = {
     url: '{{ route('admin.pinjams.storeMedia') }}',
     maxFilesize: 2, // MB
